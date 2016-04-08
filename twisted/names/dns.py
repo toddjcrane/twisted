@@ -122,34 +122,34 @@ OPT = 41
 SPF = 99
 
 QUERY_TYPES = {
-    A: 'A',
-    NS: 'NS',
-    MD: 'MD',
-    MF: 'MF',
-    CNAME: 'CNAME',
-    SOA: 'SOA',
-    MB: 'MB',
-    MG: 'MG',
-    MR: 'MR',
-    NULL: 'NULL',
-    WKS: 'WKS',
-    PTR: 'PTR',
-    HINFO: 'HINFO',
-    MINFO: 'MINFO',
-    MX: 'MX',
-    TXT: 'TXT',
-    RP: 'RP',
-    AFSDB: 'AFSDB',
+    A: 'A', # (1) RFC1035
+    NS: 'NS', # (2) RFC1035
+    MD: 'MD', # (3) RFC1035
+    MF: 'MF', # (4) RFC1035
+    CNAME: 'CNAME', # (5) RFC1035
+    SOA: 'SOA', # (6) RFC1035
+    MB: 'MB', # (7) RFC1035
+    MG: 'MG', # (8) RFC1035
+    MR: 'MR', # (9) RFC1035
+    NULL: 'NULL', # (10) RFC1035
+    WKS: 'WKS', # (11) RFC1035
+    PTR: 'PTR', # (12) RFC1035
+    HINFO: 'HINFO', # (13) RFC1035
+    MINFO: 'MINFO', # (14) RFC1035
+    MX: 'MX', # (15) RFC1035
+    TXT: 'TXT', # (16) RFC1035
+    RP: 'RP', # (17) RFC1183
+    AFSDB: 'AFSDB', # (18) RFC1183
 
     # 19 through 27?  Eh, I'll get to 'em.
 
-    AAAA: 'AAAA',
-    SRV: 'SRV',
-    NAPTR: 'NAPTR',
-    A6: 'A6',
-    DNAME: 'DNAME',
-    OPT: 'OPT',
-    SPF: 'SPF'
+    AAAA: 'AAAA', # (28) RFC3596
+    SRV: 'SRV', # (33) RFC2782
+    NAPTR: 'NAPTR', # (35) RFC2915, RFC2168, RFC3403
+    A6: 'A6', # (38) RFC3226, RFC2874, RFC6563
+    DNAME: 'DNAME', # (39) RFC6672
+    OPT: 'OPT', # (41) RFC6891, RFC3225
+    SPF: 'SPF' # (99) RFC7208
 }
 
 IXFR, AXFR, MAILB, MAILA, ALL_RECORDS = range(251, 256)
@@ -950,108 +950,6 @@ class SimpleRecord(tputil.FancyStrMixin, tputil.FancyEqMixin):
 
 
 # Kinds of RRs - oh my!
-class Record_NS(SimpleRecord):
-    """
-    An authoritative nameserver.
-    """
-    TYPE = NS
-    fancybasename = 'NS'
-
-
-
-class Record_MD(SimpleRecord):
-    """
-    A mail destination.
-
-    This record type is obsolete.
-
-    @see: L{Record_MX}
-    """
-    TYPE = MD
-    fancybasename = 'MD'
-
-
-
-class Record_MF(SimpleRecord):
-    """
-    A mail forwarder.
-
-    This record type is obsolete.
-
-    @see: L{Record_MX}
-    """
-    TYPE = MF
-    fancybasename = 'MF'
-
-
-
-class Record_CNAME(SimpleRecord):
-    """
-    The canonical name for an alias.
-    """
-    TYPE = CNAME
-    fancybasename = 'CNAME'
-
-
-
-class Record_MB(SimpleRecord):
-    """
-    A mailbox domain name.
-
-    This is an experimental record type.
-    """
-    TYPE = MB
-    fancybasename = 'MB'
-
-
-
-class Record_MG(SimpleRecord):
-    """
-    A mail group member.
-
-    This is an experimental record type.
-    """
-    TYPE = MG
-    fancybasename = 'MG'
-
-
-
-class Record_MR(SimpleRecord):
-    """
-    A mail rename domain name.
-
-    This is an experimental record type.
-    """
-    TYPE = MR
-    fancybasename = 'MR'
-
-
-
-class Record_PTR(SimpleRecord):
-    """
-    A domain name pointer.
-    """
-    TYPE = PTR
-    fancybasename = 'PTR'
-
-
-
-class Record_DNAME(SimpleRecord):
-    """
-    A non-terminal DNS name redirection.
-
-    This record type provides the capability to map an entire subtree of the
-    DNS name space to another domain.  It differs from the CNAME record which
-    maps a single node of the name space.
-
-    @see: U{http://www.faqs.org/rfcs/rfc2672.html}
-    @see: U{http://www.faqs.org/rfcs/rfc3363.html}
-    """
-    TYPE = DNAME
-    fancybasename = 'DNAME'
-
-
-
 @implementer(IEncodable, IRecord)
 class Record_A(tputil.FancyEqMixin):
     """
@@ -1095,6 +993,50 @@ class Record_A(tputil.FancyEqMixin):
 
     def dottedQuad(self):
         return socket.inet_ntoa(self.address)
+
+
+
+class Record_NS(SimpleRecord):
+    """
+    An authoritative nameserver.
+    """
+    TYPE = NS
+    fancybasename = 'NS'
+
+
+
+class Record_MD(SimpleRecord):
+    """
+    A mail destination.
+
+    This record type is obsolete.
+
+    @see: L{Record_MX}
+    """
+    TYPE = MD
+    fancybasename = 'MD'
+
+
+
+class Record_MF(SimpleRecord):
+    """
+    A mail forwarder.
+
+    This record type is obsolete.
+
+    @see: L{Record_MX}
+    """
+    TYPE = MF
+    fancybasename = 'MF'
+
+
+
+class Record_CNAME(SimpleRecord):
+    """
+    The canonical name for an alias.
+    """
+    TYPE = CNAME
+    fancybasename = 'CNAME'
 
 
 
@@ -1178,6 +1120,39 @@ class Record_SOA(tputil.FancyEqMixin, tputil.FancyStrMixin):
             self.serial, self.mname, self.rname,
             self.refresh, self.expire, self.retry
         ))
+
+
+
+class Record_MB(SimpleRecord):
+    """
+    A mailbox domain name.
+
+    This is an experimental record type.
+    """
+    TYPE = MB
+    fancybasename = 'MB'
+
+
+
+class Record_MG(SimpleRecord):
+    """
+    A mail group member.
+
+    This is an experimental record type.
+    """
+    TYPE = MG
+    fancybasename = 'MG'
+
+
+
+class Record_MR(SimpleRecord):
+    """
+    A mail rename domain name.
+
+    This is an experimental record type.
+    """
+    TYPE = MR
+    fancybasename = 'MR'
 
 
 
@@ -1270,387 +1245,12 @@ class Record_WKS(tputil.FancyEqMixin, tputil.FancyStrMixin):
 
 
 
-@implementer(IEncodable, IRecord)
-class Record_AAAA(tputil.FancyEqMixin, tputil.FancyStrMixin):
+class Record_PTR(SimpleRecord):
     """
-    An IPv6 host address.
-
-    @type address: C{str}
-    @ivar address: The packed network-order representation of the IPv6 address
-        associated with this record.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc1886.html}
+    A domain name pointer.
     """
-    TYPE = AAAA
-
-    fancybasename = 'AAAA'
-    showAttributes = (('_address', 'address', '%s'), 'ttl')
-    compareAttributes = ('address', 'ttl')
-
-    _address = property(lambda self: socket.inet_ntop(AF_INET6, self.address))
-
-    def __init__(self, address='::', ttl=None):
-        self.address = socket.inet_pton(AF_INET6, address)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict = None):
-        strio.write(self.address)
-
-
-    def decode(self, strio, length = None):
-        self.address = readPrecisely(strio, 16)
-
-
-    def __hash__(self):
-        return hash(self.address)
-
-
-
-@implementer(IEncodable, IRecord)
-class Record_A6(tputil.FancyStrMixin, tputil.FancyEqMixin):
-    """
-    An IPv6 address.
-
-    This is an experimental record type.
-
-    @type prefixLen: C{int}
-    @ivar prefixLen: The length of the suffix.
-
-    @type suffix: C{str}
-    @ivar suffix: An IPv6 address suffix in network order.
-
-    @type prefix: L{Name}
-    @ivar prefix: If specified, a name which will be used as a prefix for other
-        A6 records.
-
-    @type bytes: C{int}
-    @ivar bytes: The length of the prefix.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc2874.html}
-    @see: U{http://www.faqs.org/rfcs/rfc3363.html}
-    @see: U{http://www.faqs.org/rfcs/rfc3364.html}
-    """
-    TYPE = A6
-
-    fancybasename = 'A6'
-    showAttributes = (('_suffix', 'suffix', '%s'), ('prefix', 'prefix', '%s'), 'ttl')
-    compareAttributes = ('prefixLen', 'prefix', 'suffix', 'ttl')
-
-    _suffix = property(lambda self: socket.inet_ntop(AF_INET6, self.suffix))
-
-    def __init__(self, prefixLen=0, suffix='::', prefix=b'', ttl=None):
-        self.prefixLen = prefixLen
-        self.suffix = socket.inet_pton(AF_INET6, suffix)
-        self.prefix = Name(prefix)
-        self.bytes = int((128 - self.prefixLen) / 8.0)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict = None):
-        strio.write(struct.pack('!B', self.prefixLen))
-        if self.bytes:
-            strio.write(self.suffix[-self.bytes:])
-        if self.prefixLen:
-            # This may not be compressed
-            self.prefix.encode(strio, None)
-
-
-    def decode(self, strio, length = None):
-        self.prefixLen = struct.unpack('!B', readPrecisely(strio, 1))[0]
-        self.bytes = int((128 - self.prefixLen) / 8.0)
-        if self.bytes:
-            self.suffix = b'\x00' * (16 - self.bytes) + readPrecisely(strio, self.bytes)
-        if self.prefixLen:
-            self.prefix.decode(strio)
-
-
-    def __eq__(self, other):
-        if isinstance(other, Record_A6):
-            return (self.prefixLen == other.prefixLen and
-                    self.suffix[-self.bytes:] == other.suffix[-self.bytes:] and
-                    self.prefix == other.prefix and
-                    self.ttl == other.ttl)
-        return NotImplemented
-
-
-    def __hash__(self):
-        return hash((self.prefixLen, self.suffix[-self.bytes:], self.prefix))
-
-
-    def __str__(self):
-        return '<A6 %s %s (%d) ttl=%s>' % (
-            self.prefix,
-            socket.inet_ntop(AF_INET6, self.suffix),
-            self.prefixLen, self.ttl
-        )
-
-
-
-@implementer(IEncodable, IRecord)
-class Record_SRV(tputil.FancyEqMixin, tputil.FancyStrMixin):
-    """
-    The location of the server(s) for a specific protocol and domain.
-
-    This is an experimental record type.
-
-    @type priority: C{int}
-    @ivar priority: The priority of this target host.  A client MUST attempt to
-        contact the target host with the lowest-numbered priority it can reach;
-        target hosts with the same priority SHOULD be tried in an order defined
-        by the weight field.
-
-    @type weight: C{int}
-    @ivar weight: Specifies a relative weight for entries with the same
-        priority. Larger weights SHOULD be given a proportionately higher
-        probability of being selected.
-
-    @type port: C{int}
-    @ivar port: The port on this target host of this service.
-
-    @type target: L{Name}
-    @ivar target: The domain name of the target host.  There MUST be one or
-        more address records for this name, the name MUST NOT be an alias (in
-        the sense of RFC 1034 or RFC 2181).  Implementors are urged, but not
-        required, to return the address record(s) in the Additional Data
-        section.  Unless and until permitted by future standards action, name
-        compression is not to be used for this field.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc2782.html}
-    """
-    TYPE = SRV
-
-    fancybasename = 'SRV'
-    compareAttributes = ('priority', 'weight', 'target', 'port', 'ttl')
-    showAttributes = ('priority', 'weight', ('target', 'target', '%s'), 'port', 'ttl')
-
-    def __init__(self, priority=0, weight=0, port=0, target=b'', ttl=None):
-        self.priority = int(priority)
-        self.weight = int(weight)
-        self.port = int(port)
-        self.target = Name(target)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict = None):
-        strio.write(struct.pack('!HHH', self.priority, self.weight, self.port))
-        # This can't be compressed
-        self.target.encode(strio, None)
-
-
-    def decode(self, strio, length = None):
-        r = struct.unpack('!HHH', readPrecisely(strio, struct.calcsize('!HHH')))
-        self.priority, self.weight, self.port = r
-        self.target = Name()
-        self.target.decode(strio)
-
-
-    def __hash__(self):
-        return hash((self.priority, self.weight, self.port, self.target))
-
-
-
-@implementer(IEncodable, IRecord)
-class Record_NAPTR(tputil.FancyEqMixin, tputil.FancyStrMixin):
-    """
-    The location of the server(s) for a specific protocol and domain.
-
-    @type order: C{int}
-    @ivar order: An integer specifying the order in which the NAPTR records
-        MUST be processed to ensure the correct ordering of rules.  Low numbers
-        are processed before high numbers.
-
-    @type preference: C{int}
-    @ivar preference: An integer that specifies the order in which NAPTR
-        records with equal "order" values SHOULD be processed, low numbers
-        being processed before high numbers.
-
-    @type flag: L{Charstr}
-    @ivar flag: A <character-string> containing flags to control aspects of the
-        rewriting and interpretation of the fields in the record.  Flags
-        are single characters from the set [A-Z0-9].  The case of the alphabetic
-        characters is not significant.
-
-        At this time only four flags, "S", "A", "U", and "P", are defined.
-
-    @type service: L{Charstr}
-    @ivar service: Specifies the service(s) available down this rewrite path.
-        It may also specify the particular protocol that is used to talk with a
-        service.  A protocol MUST be specified if the flags field states that
-        the NAPTR is terminal.
-
-    @type regexp: L{Charstr}
-    @ivar regexp: A STRING containing a substitution expression that is applied
-        to the original string held by the client in order to construct the
-        next domain name to lookup.
-
-    @type replacement: L{Name}
-    @ivar replacement: The next NAME to query for NAPTR, SRV, or address
-        records depending on the value of the flags field.  This MUST be a
-        fully qualified domain-name.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc2915.html}
-    """
-    TYPE = NAPTR
-
-    compareAttributes = ('order', 'preference', 'flags', 'service', 'regexp',
-                         'replacement')
-    fancybasename = 'NAPTR'
-
-    showAttributes = ('order', 'preference', ('flags', 'flags', '%s'),
-                      ('service', 'service', '%s'), ('regexp', 'regexp', '%s'),
-                      ('replacement', 'replacement', '%s'), 'ttl')
-
-    def __init__(self, order=0, preference=0, flags=b'', service=b'', regexp=b'',
-                 replacement=b'', ttl=None):
-        self.order = int(order)
-        self.preference = int(preference)
-        self.flags = Charstr(flags)
-        self.service = Charstr(service)
-        self.regexp = Charstr(regexp)
-        self.replacement = Name(replacement)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict=None):
-        strio.write(struct.pack('!HH', self.order, self.preference))
-        # This can't be compressed
-        self.flags.encode(strio, None)
-        self.service.encode(strio, None)
-        self.regexp.encode(strio, None)
-        self.replacement.encode(strio, None)
-
-
-    def decode(self, strio, length=None):
-        r = struct.unpack('!HH', readPrecisely(strio, struct.calcsize('!HH')))
-        self.order, self.preference = r
-        self.flags = Charstr()
-        self.service = Charstr()
-        self.regexp = Charstr()
-        self.replacement = Name()
-        self.flags.decode(strio)
-        self.service.decode(strio)
-        self.regexp.decode(strio)
-        self.replacement.decode(strio)
-
-
-    def __hash__(self):
-        return hash((
-            self.order, self.preference, self.flags,
-            self.service, self.regexp, self.replacement))
-
-
-
-@implementer(IEncodable, IRecord)
-class Record_AFSDB(tputil.FancyStrMixin, tputil.FancyEqMixin):
-    """
-    Map from a domain name to the name of an AFS cell database server.
-
-    @type subtype: C{int}
-    @ivar subtype: In the case of subtype 1, the host has an AFS version 3.0
-        Volume Location Server for the named AFS cell.  In the case of subtype
-        2, the host has an authenticated name server holding the cell-root
-        directory node for the named DCE/NCA cell.
-
-    @type hostname: L{Name}
-    @ivar hostname: The domain name of a host that has a server for the cell
-        named by this record.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc1183.html}
-    """
-    TYPE = AFSDB
-
-    fancybasename = 'AFSDB'
-    compareAttributes = ('subtype', 'hostname', 'ttl')
-    showAttributes = ('subtype', ('hostname', 'hostname', '%s'), 'ttl')
-
-    def __init__(self, subtype=0, hostname=b'', ttl=None):
-        self.subtype = int(subtype)
-        self.hostname = Name(hostname)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict = None):
-        strio.write(struct.pack('!H', self.subtype))
-        self.hostname.encode(strio, compDict)
-
-
-    def decode(self, strio, length = None):
-        r = struct.unpack('!H', readPrecisely(strio, struct.calcsize('!H')))
-        self.subtype, = r
-        self.hostname.decode(strio)
-
-
-    def __hash__(self):
-        return hash((self.subtype, self.hostname))
-
-
-
-@implementer(IEncodable, IRecord)
-class Record_RP(tputil.FancyEqMixin, tputil.FancyStrMixin):
-    """
-    The responsible person for a domain.
-
-    @type mbox: L{Name}
-    @ivar mbox: A domain name that specifies the mailbox for the responsible
-        person.
-
-    @type txt: L{Name}
-    @ivar txt: A domain name for which TXT RR's exist (indirection through
-        which allows information sharing about the contents of this RP record).
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be
-        cached.
-
-    @see: U{http://www.faqs.org/rfcs/rfc1183.html}
-    """
-    TYPE = RP
-
-    fancybasename = 'RP'
-    compareAttributes = ('mbox', 'txt', 'ttl')
-    showAttributes = (('mbox', 'mbox', '%s'), ('txt', 'txt', '%s'), 'ttl')
-
-    def __init__(self, mbox=b'', txt=b'', ttl=None):
-        self.mbox = Name(mbox)
-        self.txt = Name(txt)
-        self.ttl = str2time(ttl)
-
-
-    def encode(self, strio, compDict = None):
-        self.mbox.encode(strio, compDict)
-        self.txt.encode(strio, compDict)
-
-
-    def decode(self, strio, length = None):
-        self.mbox = Name()
-        self.txt = Name()
-        self.mbox.decode(strio)
-        self.txt.decode(strio)
-
-
-    def __hash__(self):
-        return hash((self.mbox, self.txt))
+    TYPE = PTR
+    fancybasename = 'PTR'
 
 
 
@@ -1850,6 +1450,422 @@ class Record_TXT(tputil.FancyEqMixin, tputil.FancyStrMixin):
 
 
 @implementer(IEncodable, IRecord)
+class Record_RP(tputil.FancyEqMixin, tputil.FancyStrMixin):
+    """
+    The responsible person for a domain.
+
+    @type mbox: L{Name}
+    @ivar mbox: A domain name that specifies the mailbox for the responsible
+        person.
+
+    @type txt: L{Name}
+    @ivar txt: A domain name for which TXT RR's exist (indirection through
+        which allows information sharing about the contents of this RP record).
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc1183.html}
+    """
+    TYPE = RP
+
+    fancybasename = 'RP'
+    compareAttributes = ('mbox', 'txt', 'ttl')
+    showAttributes = (('mbox', 'mbox', '%s'), ('txt', 'txt', '%s'), 'ttl')
+
+    def __init__(self, mbox=b'', txt=b'', ttl=None):
+        self.mbox = Name(mbox)
+        self.txt = Name(txt)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict = None):
+        self.mbox.encode(strio, compDict)
+        self.txt.encode(strio, compDict)
+
+
+    def decode(self, strio, length = None):
+        self.mbox = Name()
+        self.txt = Name()
+        self.mbox.decode(strio)
+        self.txt.decode(strio)
+
+
+    def __hash__(self):
+        return hash((self.mbox, self.txt))
+
+
+
+@implementer(IEncodable, IRecord)
+class Record_AFSDB(tputil.FancyStrMixin, tputil.FancyEqMixin):
+    """
+    Map from a domain name to the name of an AFS cell database server.
+
+    @type subtype: C{int}
+    @ivar subtype: In the case of subtype 1, the host has an AFS version 3.0
+        Volume Location Server for the named AFS cell.  In the case of subtype
+        2, the host has an authenticated name server holding the cell-root
+        directory node for the named DCE/NCA cell.
+
+    @type hostname: L{Name}
+    @ivar hostname: The domain name of a host that has a server for the cell
+        named by this record.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc1183.html}
+    """
+    TYPE = AFSDB
+
+    fancybasename = 'AFSDB'
+    compareAttributes = ('subtype', 'hostname', 'ttl')
+    showAttributes = ('subtype', ('hostname', 'hostname', '%s'), 'ttl')
+
+    def __init__(self, subtype=0, hostname=b'', ttl=None):
+        self.subtype = int(subtype)
+        self.hostname = Name(hostname)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict = None):
+        strio.write(struct.pack('!H', self.subtype))
+        self.hostname.encode(strio, compDict)
+
+
+    def decode(self, strio, length = None):
+        r = struct.unpack('!H', readPrecisely(strio, struct.calcsize('!H')))
+        self.subtype, = r
+        self.hostname.decode(strio)
+
+
+    def __hash__(self):
+        return hash((self.subtype, self.hostname))
+
+
+
+@implementer(IEncodable, IRecord)
+class Record_AAAA(tputil.FancyEqMixin, tputil.FancyStrMixin):
+    """
+    An IPv6 host address.
+
+    @type address: C{str}
+    @ivar address: The packed network-order representation of the IPv6 address
+        associated with this record.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc1886.html}
+    """
+    TYPE = AAAA
+
+    fancybasename = 'AAAA'
+    showAttributes = (('_address', 'address', '%s'), 'ttl')
+    compareAttributes = ('address', 'ttl')
+
+    _address = property(lambda self: socket.inet_ntop(AF_INET6, self.address))
+
+    def __init__(self, address='::', ttl=None):
+        self.address = socket.inet_pton(AF_INET6, address)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict = None):
+        strio.write(self.address)
+
+
+    def decode(self, strio, length = None):
+        self.address = readPrecisely(strio, 16)
+
+
+    def __hash__(self):
+        return hash(self.address)
+
+
+
+@implementer(IEncodable, IRecord)
+class Record_SRV(tputil.FancyEqMixin, tputil.FancyStrMixin):
+    """
+    The location of the server(s) for a specific protocol and domain.
+
+    This is an experimental record type.
+
+    @type priority: C{int}
+    @ivar priority: The priority of this target host.  A client MUST attempt to
+        contact the target host with the lowest-numbered priority it can reach;
+        target hosts with the same priority SHOULD be tried in an order defined
+        by the weight field.
+
+    @type weight: C{int}
+    @ivar weight: Specifies a relative weight for entries with the same
+        priority. Larger weights SHOULD be given a proportionately higher
+        probability of being selected.
+
+    @type port: C{int}
+    @ivar port: The port on this target host of this service.
+
+    @type target: L{Name}
+    @ivar target: The domain name of the target host.  There MUST be one or
+        more address records for this name, the name MUST NOT be an alias (in
+        the sense of RFC 1034 or RFC 2181).  Implementors are urged, but not
+        required, to return the address record(s) in the Additional Data
+        section.  Unless and until permitted by future standards action, name
+        compression is not to be used for this field.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc2782.html}
+    """
+    TYPE = SRV
+
+    fancybasename = 'SRV'
+    compareAttributes = ('priority', 'weight', 'target', 'port', 'ttl')
+    showAttributes = ('priority', 'weight', ('target', 'target', '%s'), 'port', 'ttl')
+
+    def __init__(self, priority=0, weight=0, port=0, target=b'', ttl=None):
+        self.priority = int(priority)
+        self.weight = int(weight)
+        self.port = int(port)
+        self.target = Name(target)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict = None):
+        strio.write(struct.pack('!HHH', self.priority, self.weight, self.port))
+        # This can't be compressed
+        self.target.encode(strio, None)
+
+
+    def decode(self, strio, length = None):
+        r = struct.unpack('!HHH', readPrecisely(strio, struct.calcsize('!HHH')))
+        self.priority, self.weight, self.port = r
+        self.target = Name()
+        self.target.decode(strio)
+
+
+    def __hash__(self):
+        return hash((self.priority, self.weight, self.port, self.target))
+
+
+
+@implementer(IEncodable, IRecord)
+class Record_NAPTR(tputil.FancyEqMixin, tputil.FancyStrMixin):
+    """
+    The location of the server(s) for a specific protocol and domain.
+
+    @type order: C{int}
+    @ivar order: An integer specifying the order in which the NAPTR records
+        MUST be processed to ensure the correct ordering of rules.  Low numbers
+        are processed before high numbers.
+
+    @type preference: C{int}
+    @ivar preference: An integer that specifies the order in which NAPTR
+        records with equal "order" values SHOULD be processed, low numbers
+        being processed before high numbers.
+
+    @type flag: L{Charstr}
+    @ivar flag: A <character-string> containing flags to control aspects of the
+        rewriting and interpretation of the fields in the record.  Flags
+        are single characters from the set [A-Z0-9].  The case of the alphabetic
+        characters is not significant.
+
+        At this time only four flags, "S", "A", "U", and "P", are defined.
+
+    @type service: L{Charstr}
+    @ivar service: Specifies the service(s) available down this rewrite path.
+        It may also specify the particular protocol that is used to talk with a
+        service.  A protocol MUST be specified if the flags field states that
+        the NAPTR is terminal.
+
+    @type regexp: L{Charstr}
+    @ivar regexp: A STRING containing a substitution expression that is applied
+        to the original string held by the client in order to construct the
+        next domain name to lookup.
+
+    @type replacement: L{Name}
+    @ivar replacement: The next NAME to query for NAPTR, SRV, or address
+        records depending on the value of the flags field.  This MUST be a
+        fully qualified domain-name.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc2915.html}
+    """
+    TYPE = NAPTR
+
+    compareAttributes = ('order', 'preference', 'flags', 'service', 'regexp',
+                         'replacement')
+    fancybasename = 'NAPTR'
+
+    showAttributes = ('order', 'preference', ('flags', 'flags', '%s'),
+                      ('service', 'service', '%s'), ('regexp', 'regexp', '%s'),
+                      ('replacement', 'replacement', '%s'), 'ttl')
+
+    def __init__(self, order=0, preference=0, flags=b'', service=b'', regexp=b'',
+                 replacement=b'', ttl=None):
+        self.order = int(order)
+        self.preference = int(preference)
+        self.flags = Charstr(flags)
+        self.service = Charstr(service)
+        self.regexp = Charstr(regexp)
+        self.replacement = Name(replacement)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict=None):
+        strio.write(struct.pack('!HH', self.order, self.preference))
+        # This can't be compressed
+        self.flags.encode(strio, None)
+        self.service.encode(strio, None)
+        self.regexp.encode(strio, None)
+        self.replacement.encode(strio, None)
+
+
+    def decode(self, strio, length=None):
+        r = struct.unpack('!HH', readPrecisely(strio, struct.calcsize('!HH')))
+        self.order, self.preference = r
+        self.flags = Charstr()
+        self.service = Charstr()
+        self.regexp = Charstr()
+        self.replacement = Name()
+        self.flags.decode(strio)
+        self.service.decode(strio)
+        self.regexp.decode(strio)
+        self.replacement.decode(strio)
+
+
+    def __hash__(self):
+        return hash((
+            self.order, self.preference, self.flags,
+            self.service, self.regexp, self.replacement))
+
+
+
+@implementer(IEncodable, IRecord)
+class Record_A6(tputil.FancyStrMixin, tputil.FancyEqMixin):
+    """
+    An IPv6 address.
+
+    This is an experimental record type.
+
+    @type prefixLen: C{int}
+    @ivar prefixLen: The length of the suffix.
+
+    @type suffix: C{str}
+    @ivar suffix: An IPv6 address suffix in network order.
+
+    @type prefix: L{Name}
+    @ivar prefix: If specified, a name which will be used as a prefix for other
+        A6 records.
+
+    @type bytes: C{int}
+    @ivar bytes: The length of the prefix.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be
+        cached.
+
+    @see: U{http://www.faqs.org/rfcs/rfc2874.html}
+    @see: U{http://www.faqs.org/rfcs/rfc3363.html}
+    @see: U{http://www.faqs.org/rfcs/rfc3364.html}
+    """
+    TYPE = A6
+
+    fancybasename = 'A6'
+    showAttributes = (('_suffix', 'suffix', '%s'), ('prefix', 'prefix', '%s'), 'ttl')
+    compareAttributes = ('prefixLen', 'prefix', 'suffix', 'ttl')
+
+    _suffix = property(lambda self: socket.inet_ntop(AF_INET6, self.suffix))
+
+    def __init__(self, prefixLen=0, suffix='::', prefix=b'', ttl=None):
+        self.prefixLen = prefixLen
+        self.suffix = socket.inet_pton(AF_INET6, suffix)
+        self.prefix = Name(prefix)
+        self.bytes = int((128 - self.prefixLen) / 8.0)
+        self.ttl = str2time(ttl)
+
+
+    def encode(self, strio, compDict = None):
+        strio.write(struct.pack('!B', self.prefixLen))
+        if self.bytes:
+            strio.write(self.suffix[-self.bytes:])
+        if self.prefixLen:
+            # This may not be compressed
+            self.prefix.encode(strio, None)
+
+
+    def decode(self, strio, length = None):
+        self.prefixLen = struct.unpack('!B', readPrecisely(strio, 1))[0]
+        self.bytes = int((128 - self.prefixLen) / 8.0)
+        if self.bytes:
+            self.suffix = b'\x00' * (16 - self.bytes) + readPrecisely(strio, self.bytes)
+        if self.prefixLen:
+            self.prefix.decode(strio)
+
+
+    def __eq__(self, other):
+        if isinstance(other, Record_A6):
+            return (self.prefixLen == other.prefixLen and
+                    self.suffix[-self.bytes:] == other.suffix[-self.bytes:] and
+                    self.prefix == other.prefix and
+                    self.ttl == other.ttl)
+        return NotImplemented
+
+
+    def __hash__(self):
+        return hash((self.prefixLen, self.suffix[-self.bytes:], self.prefix))
+
+
+    def __str__(self):
+        return '<A6 %s %s (%d) ttl=%s>' % (
+            self.prefix,
+            socket.inet_ntop(AF_INET6, self.suffix),
+            self.prefixLen, self.ttl
+        )
+
+
+
+class Record_DNAME(SimpleRecord):
+    """
+    A non-terminal DNS name redirection.
+
+    This record type provides the capability to map an entire subtree of the
+    DNS name space to another domain.  It differs from the CNAME record which
+    maps a single node of the name space.
+
+    @see: U{http://www.faqs.org/rfcs/rfc2672.html}
+    @see: U{http://www.faqs.org/rfcs/rfc3363.html}
+    """
+    TYPE = DNAME
+    fancybasename = 'DNAME'
+
+
+
+class Record_SPF(Record_TXT):
+    """
+    Structurally, freeform text. Semantically, a policy definition, formatted
+    as defined in U{rfc 4408<http://www.faqs.org/rfcs/rfc4408.html>}.
+
+    @type data: C{list} of C{str}
+    @ivar data: Freeform text which makes up this record.
+
+    @type ttl: C{int}
+    @ivar ttl: The maximum number of seconds which this record should be cached.
+    """
+    TYPE = SPF
+    fancybasename = 'SPF'
+
+
+
+@implementer(IEncodable, IRecord)
 class UnknownRecord(tputil.FancyEqMixin, tputil.FancyStrMixin, object):
     """
     Encapsulate the wire data for unknown record types so that they can
@@ -1892,22 +1908,6 @@ class UnknownRecord(tputil.FancyEqMixin, tputil.FancyStrMixin, object):
 
     def __hash__(self):
         return hash((self.data, self.ttl))
-
-
-
-class Record_SPF(Record_TXT):
-    """
-    Structurally, freeform text. Semantically, a policy definition, formatted
-    as defined in U{rfc 4408<http://www.faqs.org/rfcs/rfc4408.html>}.
-
-    @type data: C{list} of C{str}
-    @ivar data: Freeform text which makes up this record.
-
-    @type ttl: C{int}
-    @ivar ttl: The maximum number of seconds which this record should be cached.
-    """
-    TYPE = SPF
-    fancybasename = 'SPF'
 
 
 
